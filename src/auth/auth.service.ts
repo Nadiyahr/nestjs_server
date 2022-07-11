@@ -1,5 +1,6 @@
+import { SignInDto } from './../dto/singin.dto';
 import { jwtSecret } from './../utils/constants';
-import { AuthDto } from './../dto/auth.dto';
+import { SignupDto } from '../dto/signup.dto';
 import { PrismaService } from './../../prisma/prisma.service';
 import {
   BadRequestException,
@@ -14,8 +15,17 @@ import { Request, Response } from 'express';
 export class AuthService {
   constructor(private prisma: PrismaService, private jwt: JwtService) {}
 
-  async signup(dto: AuthDto) {
-    const { email, password } = dto;
+  async signup(dto: SignupDto) {
+    const {
+      email,
+      password,
+      phone_number,
+      last_name,
+      first_name,
+      nick_name,
+      description,
+      position,
+    } = dto;
 
     const foundUser = await this.prisma.user.findUnique({ where: { email } });
 
@@ -29,12 +39,32 @@ export class AuthService {
       data: {
         email,
         hashedPassword,
+        last_name,
+        first_name,
+        nick_name,
+        description,
+        position,
+        phone_number,
       },
     });
 
-    return { message: 'signup was ok' };
+    const newUser = await this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        last_name: true,
+        first_name: true,
+        nick_name: true,
+        description: true,
+        position: true,
+        phone_number: true,
+      },
+    });
+
+    return { message: 'signup was ok', newUser };
   }
-  async signin(dto: AuthDto, rec: Request, res: Response) {
+
+  async signin(dto: SignInDto, rec: Request, res: Response) {
     const { email, password } = dto;
 
     const foundUser = await this.prisma.user.findUnique({ where: { email } });
@@ -65,6 +95,7 @@ export class AuthService {
 
     return res.send({ message: 'Logged in!!' });
   }
+
   async signout(rec: Request, res: Response) {
     res.clearCookie('token');
     return res.send({ message: 'Logged out ok)' });
