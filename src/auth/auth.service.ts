@@ -19,7 +19,7 @@ export class AuthService {
     const {
       email,
       password,
-      phone_number,
+      phone_numb,
       last_name,
       first_name,
       nick_name,
@@ -44,24 +44,11 @@ export class AuthService {
         nick_name,
         description,
         position,
-        phone_number,
+        phone_numb,
       },
     });
 
-    const newUser = await this.prisma.user.findMany({
-      select: {
-        id: true,
-        email: true,
-        last_name: true,
-        first_name: true,
-        nick_name: true,
-        description: true,
-        position: true,
-        phone_number: true,
-      },
-    });
-
-    return { message: 'signup was ok', newUser };
+    return { message: 'Registration was successful!' };
   }
 
   async signin(dto: SignInDto, rec: Request, res: Response) {
@@ -98,7 +85,7 @@ export class AuthService {
 
   async signout(rec: Request, res: Response) {
     res.clearCookie('token');
-    return res.send({ message: 'Logged out ok)' });
+    return res.send({ message: 'You have successfully logged in!' });
   }
 
   async hashPassword(password: string) {

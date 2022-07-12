@@ -3,7 +3,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "hashedPassword" TEXT NOT NULL,
-    "phone_number" INTEGER NOT NULL,
+    "phone_number" TEXT NOT NULL,
     "last_name" TEXT NOT NULL,
     "first_name" TEXT NOT NULL,
     "nick_name" TEXT NOT NULL,
